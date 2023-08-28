@@ -1,3 +1,5 @@
+
+
 name: Deploy to Google Cloud e2 Ubuntu instance
 
 on:
@@ -18,18 +20,20 @@ jobs:
         dotnet restore
         dotnet publish -c Release -o out
 
-    - name: Copy files to Google Cloud instance
-      env:
-        PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        HOST: 34.67.246.160
-        USER: ripman3
-      run: |
-        echo "$PRIVATE_KEY" > private_key.pem
-        chmod 600 private_key.pem
-        scp -i private_key.pem -r ./out/* $USER@$HOST:/telegram_bots/pokefusion
-        rm -f private_key.pem
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.4.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} 
         
-    - run: echo "${{ secrets.TELEGRAM_BOT_TOKEN }}" > /telegram_bots/pokefusion/bot_token.txt
-    - name: Execute the app (optional)
-      run: |
-        ssh -i private_key.pem $USER@$HOST "chmod +x /path/on/your/server/your_app_name.exe && /telegram_bots/pokefusion/PokeFusionBot.exe"
+    - name: Deploy code
+        run: |
+          ssh -o StrictHostKeyChecking=no ripman3@34.67.246.160 'bash -s' << EOF
+            echo "${{ secrets.TELEGRAM_BOT_TOKEN }}" > /telegram_bots/pokefusion/bot_token.txt
+            cd /telegram_bots/pokefusion
+            git pull origin main
+            dotnet publish -c Release -o published
+            cd published
+            dotnet PokeFusionBot.dll
+          EOF
+        
+

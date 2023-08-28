@@ -1,0 +1,35 @@
+name: Deploy to Google Cloud e2 Ubuntu instance
+
+on:
+  push:
+    branches:
+      - main  # or your default branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Build and publish .NET Core app
+      run: |
+        dotnet restore
+        dotnet publish -c Release -o out
+
+    - name: Copy files to Google Cloud instance
+      env:
+        PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        HOST: 34.67.246.160
+        USER: ripman3
+      run: |
+        echo "$PRIVATE_KEY" > private_key.pem
+        chmod 600 private_key.pem
+        scp -i private_key.pem -r ./out/* $USER@$HOST:/telegram_bots/pokefusion
+        rm -f private_key.pem
+        
+    - run: echo "${{ secrets.TELEGRAM_BOT_TOKEN }}" > /telegram_bots/pokefusion/bot_token.txt
+    - name: Execute the app (optional)
+      run: |
+        ssh -i private_key.pem $USER@$HOST "chmod +x /path/on/your/server/your_app_name.exe && /telegram_bots/pokefusion/PokeFusionBot.exe"

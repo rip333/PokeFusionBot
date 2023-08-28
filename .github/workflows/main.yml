@@ -33,13 +33,8 @@ jobs:
 
     - name: Deploy
       run: |
-        ssh -o StrictHostKeyChecking=no ripman3@34.67.246.160 'bash -s' << EOF
-          echo "${{ secrets.TELEGRAM_BOT_TOKEN }}" > /telegram_bots/pokefusion/bot_token.txt
-          cd /telegram_bots/pokefusion
-          git pull origin main
-          dotnet publish -c Release -o published
-          cd published
-          dotnet PokeFusionBot.dll
-        EOF
-        
-
+        cd /telegram_bots/pokefusion
+        git pull origin main
+        dotnet publish -c Release -o published
+        cd published
+        dotnet PokeFusionBot.dll

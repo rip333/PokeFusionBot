@@ -389,3 +389,5 @@ FodyWeavers.xsd
 # JetBrains Rider
 .idea/
 *.sln.iml
+*.dll
+*.cache

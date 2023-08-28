@@ -34,10 +34,10 @@ public class UpdateManager
         Console.WriteLine($"Received message in chat {chatId}.");
 
         var text = update.Message.Text;
-        Console.WriteLine(text);
         var splitString = text.Split(" ");
-        if (splitString.Length > 5) return;
+        if (splitString.Length > 3) return;
 
+        Console.WriteLine(text);
         var matches = new int[2];
         int i = 0;
         foreach (var word in splitString)
@@ -56,12 +56,7 @@ public class UpdateManager
 
         if (matches.Length == 2)
         {
-            int pokemon1id = matches[0];
-            int pokemon2id = matches[1];
-
-            var url = $"https://raw.githubusercontent.com/Aegide/custom-fusion-sprites/main/CustomBattlers/{pokemon1id}.{pokemon2id}.png";
-
-            Console.WriteLine(url);
+            var url = await PokeFuseManager.GetUrlsFromPokemonIds(matches);
             try
             {
                 await botClient.SendPhotoAsync(chatId: chatId, photo: url,

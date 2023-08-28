@@ -392,12 +392,5 @@ FodyWeavers.xsd
 
 *.dll
 *.cache
-PokeFusionBot/bin/Debug/net7.0/PokeFusionBot.dll
-PokeFusionBot/bin/Debug/net7.0/PokeFusionBot.pdb
-PokeFusionBot/obj/Debug/net7.0/PokeFusionBot.assets.cache
-PokeFusionBot/obj/Debug/net7.0/PokeFusionBot.csproj.CoreCompileInputs.cache
-PokeFusionBot/obj/Debug/net7.0/PokeFusionBot.dll
-PokeFusionBot/obj/Debug/net7.0/PokeFusionBot.GeneratedMSBuildEditorConfig.editorconfig
-PokeFusionBot/obj/Debug/net7.0/PokeFusionBot.pdb
-PokeFusionBot/obj/Debug/net7.0/ref/PokeFusionBot.dll
-PokeFusionBot/obj/Debug/net7.0/refint/PokeFusionBot.dll
+PokeFusionBot/bin/
+PokeFusionBot/obj/

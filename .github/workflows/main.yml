@@ -20,10 +20,12 @@ jobs:
         dotnet restore
         dotnet publish -c Release -o out
 
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.4.0
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@master
       with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} 
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        project_id: pokefusion-telegrambot
+        export_default_credentials: true 
 
     - name: Deploy
       run: |

@@ -24,16 +24,16 @@ jobs:
       uses: webfactory/ssh-agent@v0.4.0
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} 
-        
-    - name: Deploy code
-        run: |
-          ssh -o StrictHostKeyChecking=no ripman3@34.67.246.160 'bash -s' << EOF
-            echo "${{ secrets.TELEGRAM_BOT_TOKEN }}" > /telegram_bots/pokefusion/bot_token.txt
-            cd /telegram_bots/pokefusion
-            git pull origin main
-            dotnet publish -c Release -o published
-            cd published
-            dotnet PokeFusionBot.dll
-          EOF
+
+    - name: Deploy
+      run: |
+        ssh -o StrictHostKeyChecking=no ripman3@34.67.246.160 'bash -s' << EOF
+          echo "${{ secrets.TELEGRAM_BOT_TOKEN }}" > /telegram_bots/pokefusion/bot_token.txt
+          cd /telegram_bots/pokefusion
+          git pull origin main
+          dotnet publish -c Release -o published
+          cd published
+          dotnet PokeFusionBot.dll
+        EOF
         
 

@@ -394,3 +394,4 @@ FodyWeavers.xsd
 *.cache
 PokeFusionBot/bin/
 PokeFusionBot/obj/
+PokeFusionBot/published/

@@ -38,7 +38,7 @@ jobs:
         zone: 'us-central1-a'
         ssh_private_key: '${{ secrets.SSH_PRIVATE_KEY }}'
         command: |
-          cd /telegram_bots/pokefusion
+          cd ~/telegram_bots/pokefusion
           git pull origin main
           dotnet publish -c Release -o published
           cd published

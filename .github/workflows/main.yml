@@ -1,11 +1,11 @@
 
 
-name: Deploy to Google Cloud e2 Ubuntu instance
+name: Build, Unit Test, and Deploy to Google Cloud e2 Ubuntu instance
 
 on:
   push:
     branches:
-      - main  # or your default branch
+      - main
 
 jobs:
   deploy:

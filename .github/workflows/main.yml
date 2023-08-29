@@ -42,7 +42,7 @@ jobs:
           echo "${{ secrets.TELEGRAM_BOT_TOKEN }}" >> bot_token.txt
           dotnet run
           exit
-          
+
     - name: Access logs
       id: 'logs'
       run: |-

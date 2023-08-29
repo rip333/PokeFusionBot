@@ -1,5 +1,35 @@
 public class PokeFuseManager
 {
+    public async static Task<string> CheckTextForIds(string text)
+    {
+        var splitString = text.Split(" ");
+        if (splitString.Length > 3) return "";
+
+        Console.WriteLine(text);
+        var matches = new int[2];
+        int i = 0;
+        foreach (var word in splitString)
+        {
+            if (i == 2) break;
+            if (PokeData.dict.ContainsKey(word.ToLower()))
+            {
+                int id = PokeData.dict[word.ToLower()];
+                if (id != 0)
+                {
+                    matches[i] = PokeData.dict[word.ToLower()];
+                    i++;
+                }
+            }
+        }
+
+        if (matches.Length == 2)
+        {
+            var url = await PokeFuseManager.GetUrlsFromPokemonIds(matches);
+            return url;
+        }
+        return "";
+    }
+
     public static async Task<string> GetUrlsFromPokemonIds(int[] pokemonIds)
     {
         int pokemon1id = pokemonIds[0];

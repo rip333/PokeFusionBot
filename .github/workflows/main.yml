@@ -44,8 +44,6 @@ jobs:
           git pull
           dotnet publish -c Release -o published
           cp /home/ripman3/telegram_bots/pokefusion/PokeFusionBot/bot_token.txt /home/ripman3/telegram_bots/pokefusion/PokeFusionBot/published
-          cd published
-          dotnet PokeFusionBot.dll
 
     - name: Access logs
       id: 'logs'

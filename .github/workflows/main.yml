@@ -37,9 +37,10 @@ jobs:
         instance_name: 'telegram-bot-1'
         zone: 'us-central1-a'
         ssh_private_key: '${{ secrets.SSH_PRIVATE_KEY }}'
-        command: |
-          cd ~/telegram_bots/pokefusion
-          git pull origin main
-          dotnet publish -c Release -o published
-          cd published
-          dotnet PokeFusionBot.dll
+    - name: "build and run"
+      run: |
+        cd ~/telegram_bots/pokefusion
+        git pull origin main
+        dotnet publish -c Release -o published
+        cd published
+        dotnet PokeFusionBot.dll

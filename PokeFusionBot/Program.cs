@@ -7,8 +7,16 @@ var token = await ConfigUtility.GetToken();
 
 var bot = BotBaseBuilder
     .Create()
-    .QuickStart<StartForm>(token)
+    .WithAPIKey(token)
+    .DefaultMessageLoop()
+    .WithStartForm<StartForm>()
+    .NoProxy()
+    .CustomCommands(a => {})
+    .NoSerialization()
+    .UseEnglish()
     .Build();
+
+await bot.UploadBotCommands();
 
 // Start your Bot
 await bot.Start();

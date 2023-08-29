@@ -15,11 +15,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Build and publish .NET Core app
-      run: |
-        dotnet restore
-        dotnet publish -c Release -o out
-
     - id: 'auth'
       uses: 'google-github-actions/auth@v1'
       with:
@@ -42,9 +37,12 @@ jobs:
           cp /home/ripman3/telegram_bots/pokefusion/bot_token.txt /home/ripman3/telegram_bots/pokefusion/PokeFusionBot
           cd /home/ripman3/telegram_bots/pokefusion/PokeFusionBot
           git pull
-          dotnet publish -c Release -o published
-          cp /home/ripman3/telegram_bots/pokefusion/PokeFusionBot/bot_token.txt /home/ripman3/telegram_bots/pokefusion/PokeFusionBot/published
-
+          dotnet build
+          cd PokeFusionBot
+          echo "${{ secrets.TELEGRAM_BOT_TOKEN }}" >> bot_token.txt
+          dotnet run
+          exit
+          
     - name: Access logs
       id: 'logs'
       run: |-

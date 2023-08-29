@@ -39,7 +39,7 @@ jobs:
         ssh_private_key: '${{ secrets.SSH_PRIVATE_KEY }}'
         user: '${{ secrets.GCP_USER }}'
         command: >
-          cd ~/telegram_bots/pokefusion &&
+          cd /home/ripman3/telegram_bots/pokefusion
           git pull
           dotnet publish -c Release -o published
           cd published

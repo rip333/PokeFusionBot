@@ -11,6 +11,7 @@ public class ConfigUtility
         var tokenFileLocation = config["AppSettings:TokenFileLocation"];
         Console.WriteLine(tokenFileLocation);
         var token = await File.ReadAllTextAsync(tokenFileLocation);
+        Console.WriteLine(token);
         return token;
     }
 }

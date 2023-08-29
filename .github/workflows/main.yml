@@ -39,9 +39,11 @@ jobs:
         ssh_private_key: '${{ secrets.SSH_PRIVATE_KEY }}'
         user: '${{ secrets.GCP_USER }}'
         command: |
+          cp /home/ripman3/telegram_bots/pokefusion/bot_token.txt /home/ripman3/telegram_bots/pokefusion/PokeFusionBot
           cd /home/ripman3/telegram_bots/pokefusion/PokeFusionBot
           git pull
           dotnet publish -c Release -o published
+          cp /home/ripman3/telegram_bots/pokefusion/PokeFusionBot/bot_token.txt /home/ripman3/telegram_bots/pokefusion/PokeFusionBot/published
           cd published
           dotnet PokeFusionBot.dll
 

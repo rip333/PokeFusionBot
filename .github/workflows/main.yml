@@ -38,8 +38,8 @@ jobs:
         zone: '${{ secrets.GCP_ZONE }}'
         ssh_private_key: '${{ secrets.SSH_PRIVATE_KEY }}'
         user: '${{ secrets.GCP_USER }}'
-        command: >
-          cd /home/ripman3/telegram_bots/pokefusion
+        command: |
+          cd /home/ripman3/telegram_bots/pokefusion/PokeFusionBot
           git pull
           dotnet publish -c Release -o published
           cd published

@@ -34,12 +34,19 @@ jobs:
     - id: 'compute-ssh'
       uses: 'google-github-actions/ssh-compute@v0'
       with:
-        instance_name: 'telegram-bot-1'
-        zone: 'us-central1-a'
+        instance_name: '${{ secrets.GCP_INSTANCE_NAME }}'
+        zone: '${{ secrets.GCP_ZONE }}'
         ssh_private_key: '${{ secrets.SSH_PRIVATE_KEY }}'
-        script: |
-          cd ~/telegram_bots/pokefusion
-          git pull origin main
+        user: '${{ secrets.GCP_USER }}'
+        command: >
+          cd ~/telegram_bots/pokefusion &&
+          git pull
           dotnet publish -c Release -o published
           cd published
           dotnet PokeFusionBot.dll
+
+    - name: Access logs
+      id: 'logs'
+      run: |-
+        echo '${{ steps.compute-ssh.outputs.stdout }}'
+        echo '${{ steps.compute-ssh.outputs.stderr }}'

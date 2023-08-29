@@ -15,11 +15,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Build and publish .NET Core app
-      run: |
-        dotnet restore
-        dotnet publish -c Release -o out
-
     - id: 'auth'
       uses: 'google-github-actions/auth@v1'
       with:

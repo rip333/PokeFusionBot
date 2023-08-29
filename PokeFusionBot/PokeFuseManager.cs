@@ -1,4 +1,3 @@
-using System.Net;
 public class PokeFuseManager
 {
     public static async Task<string> GetUrlsFromPokemonIds(int[] pokemonIds)

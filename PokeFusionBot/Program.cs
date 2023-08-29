@@ -10,9 +10,6 @@ var bot = BotBaseBuilder
     .QuickStart<StartForm>(token)
     .Build();
 
-// Upload bot commands to BotFather
-await bot.UploadBotCommands();
-
 // Start your Bot
 await bot.Start();
 Console.ReadLine();

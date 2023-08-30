@@ -12,6 +12,9 @@ public class PokeFuseResponse
     public Pokemon Pokemon1 { get; set; }
     public Pokemon Pokemon2 { get; set; }
     public string FusedName() {
+        if(Pokemon1.Name == Pokemon2.Name) {
+            return Pokemon1.Name.ToUpper();
+        }
         return Utilities.CombineWords(Pokemon1.Name, Pokemon2.Name);
     }
 

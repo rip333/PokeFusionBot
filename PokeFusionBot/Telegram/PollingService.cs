@@ -25,7 +25,7 @@ namespace Telegram
                         if (string.IsNullOrEmpty(url)) continue;
                         else
                         {
-                            await MessageService.SendImageToChat(update.message.chat.id, url, token);
+                            await MessageService.SendImageToChat(update.message.chat.id, url, token, text);
                         }
                     }
             }

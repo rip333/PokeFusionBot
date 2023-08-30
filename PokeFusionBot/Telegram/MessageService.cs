@@ -4,13 +4,14 @@ namespace Telegram
     {
         private static HttpClient _httpClient = new HttpClient();
 
-        public static async Task SendImageToChat(long chatId, string imageUrl, string token)
+        public static async Task SendImageToChat(long chatId, string imageUrl, string token, string message)
         {
             var requestUrl = $"{Constants.API_URL}{token}/sendPhoto";
             var formContent = new MultipartFormDataContent
             {
                 { new StringContent(chatId.ToString()), "chat_id" },
-                { new StringContent(imageUrl), "photo" }
+                { new StringContent(imageUrl), "photo" },
+                { new StringContent(message), "caption"}
             };
 
             var response = await _httpClient.PostAsync(requestUrl, formContent);

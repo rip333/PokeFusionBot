@@ -1,3 +1,5 @@
+using FuzzySearch;
+
 public class PokeFuseManager
 {
     public async static Task<string> GetFuseFromMessage(string text)
@@ -11,20 +13,26 @@ public class PokeFuseManager
         foreach (var word in splitString)
         {
             if (i == 2) break;
-            if (PokeData.dict.ContainsKey(word.ToLower()))
+            int threshold = 1; // This value can be adjusted
+            foreach (var key in PokeData.dict.Keys)
             {
-                int id = PokeData.dict[word.ToLower()];
-                if (id != 0)
+                if (i == 2) break;
+                if (Distance.LevenshteinDistance(word.ToLower(), key) <= threshold)
                 {
-                    matches[i] = PokeData.dict[word.ToLower()];
-                    i++;
+                    int id = PokeData.dict[key];
+                    if (id != 0)
+                    {
+                        matches[i] = id;
+                        i++;
+                    }
                 }
             }
+
         }
 
         if (matches.Length == 2)
         {
-            var url = await PokeFuseManager.GetUrlsFromPokemonIds(matches);
+            var url = await GetUrlsFromPokemonIds(matches);
             return url;
         }
         return "";

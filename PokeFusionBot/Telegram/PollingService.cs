@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Text.Json;
 
 namespace Telegram
@@ -10,23 +9,25 @@ namespace Telegram
 
         public static async Task PollForUpdatesAsync(string token)
         {
-            var response = await _httpClient.GetStringAsync($"{Constants.API_URL}{token}/getUpdates?offset={_lastUpdateId + 1}");
-            Console.WriteLine(response);
-
+            var response = await _httpClient.GetStringAsync($"{Constants.API_URL}{token}/getUpdates?offset={_lastUpdateId + 1}&allowedUpdates=UpdateType.Message");
             try
             {
-                var updates = JsonSerializer.Deserialize<TelegramResponse>(response);
-                if (updates == null || updates.Result == null) return;
-                foreach (var update in updates.Result)
-                {
-                    if (update.Message == null || update.Message.Text == null) break;
-                    Console.WriteLine($"Received message: {update.Message.Text}");
-                    _lastUpdateId = update.Update_id;
+                var updates = JsonSerializer.Deserialize<GetUpdateResponse>(response);
 
-                    var url = await PokeFuseManager.GetFuseFromMessage(update.Message.Text);
-                    if (string.IsNullOrEmpty(url)) return;
-                    await MessageService.SendImageToChat(update.Message.Chat.Id, url, token);
-                }
+                if (updates != null && updates.result != null)
+                    foreach (var update in updates.result)
+                    {
+                        var text = update.message?.text ?? update.edited_message?.text ?? "";
+                        Console.WriteLine($"Received message: {text}");
+                        _lastUpdateId = update.update_id;
+
+                        var url = await PokeFuseManager.GetFuseFromMessage(text);
+                        if (string.IsNullOrEmpty(url)) continue;
+                        else
+                        {
+                            await MessageService.SendImageToChat(update.message.chat.id, url, token);
+                        }
+                    }
             }
             catch (Exception e)
             {

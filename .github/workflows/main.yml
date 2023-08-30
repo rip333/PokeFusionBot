@@ -34,13 +34,14 @@ jobs:
         ssh_private_key: '${{ secrets.SSH_PRIVATE_KEY }}'
         user: '${{ secrets.GCP_USER }}'
         command: |
-          cp /home/ripman3/telegram_bots/pokefusion/bot_token.txt /home/ripman3/telegram_bots/pokefusion/PokeFusionBot
+          pkill -f "PokeFusionBot"
           cd /home/ripman3/telegram_bots/pokefusion/PokeFusionBot
           git pull
           dotnet build
-          cd PokeFusionBot
-          echo "${{ secrets.TELEGRAM_BOT_TOKEN }}" >> bot_token.txt
-          nohup dotnet run &>/dev/null &
+          dotnet publish -c Release -r linux-x64 --self-contained true
+          cd PokeFusionBot/bin/Release/net7.0/linux-x64/publish
+          echo "${{ secrets.TELEGRAM_BOT_TOKEN }}" > token.txt
+          nohup ./PokeFusionBot
 
     - name: Access logs
       id: 'logs'

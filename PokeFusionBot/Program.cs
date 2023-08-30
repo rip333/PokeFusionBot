@@ -1,6 +1,12 @@
+﻿using Telegram;
+
 Console.WriteLine("PokeFusionBot, I choose you!");
 
 var token = await ConfigUtility.GetToken();
 
-Console.ReadLine();
+while (true)
+{
+    await PollingService.PollForUpdatesAsync(token);
+    await Task.Delay(2000);
+}
 

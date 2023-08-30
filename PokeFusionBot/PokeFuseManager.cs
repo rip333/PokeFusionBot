@@ -1,6 +1,6 @@
 public class PokeFuseManager
 {
-    public async static Task<string> CheckTextForIds(string text)
+    public async static Task<string> GetFuseFromMessage(string text)
     {
         var splitString = text.Split(" ");
         if (splitString.Length > 3) return "";

@@ -1,7 +1,15 @@
 public class PokeData
 {
+
+    public static int GetRandomValueFromDictionary()
+    {
+        var random = new Random();
+        var values = dict.Values.ToList();
+        return values[random.Next(values.Count)];
+    }
+
     public static Dictionary<string, int> dict = new Dictionary<string, int>{
-    {"bulbasaur", 1}
+        {"bulbasaur", 1}
         , {"ivysaur", 2}
         , {"venusaur", 3}
         , {"charmander", 4}

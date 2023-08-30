@@ -13,6 +13,14 @@ public class PokeFuseManager
         foreach (var word in splitString)
         {
             if (i == 2) break;
+
+            if (word.ToLower() == "pokerandom") {
+                matches[0] = PokeData.GetRandomValueFromDictionary();
+                matches[1] = PokeData.GetRandomValueFromDictionary();
+                i = 2;
+                break;
+            }
+
             int threshold = 1; // This value can be adjusted
             foreach (var key in PokeData.dict.Keys)
             {

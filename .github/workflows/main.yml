@@ -34,7 +34,7 @@ jobs:
         ssh_private_key: '${{ secrets.SSH_PRIVATE_KEY }}'
         user: '${{ secrets.GCP_USER }}'
         command: |
-          sudo systemctl stop pokefustbot.service
+          sudo systemctl stop pokefusebot.service
           cd /home/ripman3/telegram_bots/pokefusion/PokeFusionBot
           git pull
           dotnet build

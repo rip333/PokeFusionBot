@@ -28,11 +28,11 @@ namespace Telegram
                         {
                             if (!string.IsNullOrEmpty(pokeFuseResponse.ImageUrl1))
                             {
-                                await MessageService.SendImageToChat(update.message.chat.id, pokeFuseResponse.ImageUrl1, token, pokeFuseResponse.GetCaption());
+                                await MessageService.SendImageToChat(update.message.chat.id, pokeFuseResponse.ImageUrl1, token, pokeFuseResponse.GetCaption1());
                             }
-                            if (!string.IsNullOrEmpty(pokeFuseResponse.ImageUrl2))
+                            if (!string.IsNullOrEmpty(pokeFuseResponse.ImageUrl2) && pokeFuseResponse.ImageUrl1 != pokeFuseResponse.ImageUrl2)
                             {
-                                await MessageService.SendImageToChat(update.message.chat.id, pokeFuseResponse.ImageUrl2, token, pokeFuseResponse.GetCaption());
+                                await MessageService.SendImageToChat(update.message.chat.id, pokeFuseResponse.ImageUrl2, token, pokeFuseResponse.GetCaption2());
                             }
                         }
                     }

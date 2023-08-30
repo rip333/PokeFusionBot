@@ -15,8 +15,12 @@ public class PokeFuseResponse
         return Utilities.CombineWords(Pokemon1.Name, Pokemon2.Name);
     }
 
-    public string GetCaption() {
+    public string GetCaption1() {
         return $"{Utilities.UppercaseFirstLetter(Pokemon1.Name)} + {Utilities.UppercaseFirstLetter(Pokemon2.Name)} = {FusedName()}";
+    }
+
+        public string GetCaption2() {
+        return $"{Utilities.UppercaseFirstLetter(Pokemon2.Name)} + {Utilities.UppercaseFirstLetter(Pokemon1.Name)} = {FusedName()}";
     }
 }
 

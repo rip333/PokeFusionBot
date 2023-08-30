@@ -11,19 +11,25 @@ public class PokeFuseResponse
     public string? ImageUrl2 { get; set; }
     public Pokemon Pokemon1 { get; set; }
     public Pokemon Pokemon2 { get; set; }
-    public string FusedName() {
+    public string FusedName(int i = 1) {
         if(Pokemon1.Name == Pokemon2.Name) {
             return Pokemon1.Name.ToUpper();
         }
-        return Utilities.CombineWords(Pokemon1.Name, Pokemon2.Name);
+        if (i == 1)
+        {
+            return Utilities.CombineWords(Pokemon1.Name, Pokemon2.Name);
+        }
+        else {
+            return Utilities.CombineWords(Pokemon2.Name, Pokemon1.Name);
+        }
     }
 
     public string GetCaption1() {
-        return $"{Utilities.UppercaseFirstLetter(Pokemon1.Name)} + {Utilities.UppercaseFirstLetter(Pokemon2.Name)} = {FusedName()}";
+        return $"{Utilities.UppercaseFirstLetter(Pokemon1.Name)} + {Utilities.UppercaseFirstLetter(Pokemon2.Name)} = {FusedName(1)}";
     }
 
         public string GetCaption2() {
-        return $"{Utilities.UppercaseFirstLetter(Pokemon2.Name)} + {Utilities.UppercaseFirstLetter(Pokemon1.Name)} = {FusedName()}";
+        return $"{Utilities.UppercaseFirstLetter(Pokemon2.Name)} + {Utilities.UppercaseFirstLetter(Pokemon1.Name)} = {FusedName(2)}";
     }
 }
 

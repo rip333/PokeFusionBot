@@ -1,3 +1,4 @@
+namespace Pokemon;
 public class PokeData
 {
 

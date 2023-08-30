@@ -1,11 +1,12 @@
 using FuzzySearch;
 
+namespace Pokemon;
 public class PokeFuseManager
 {
-    public async static Task<string> GetFuseFromMessage(string text)
+    public async static Task<PokeFuseResponse?> GetFuseFromMessage(string text)
     {
         var splitString = text.Split(" ");
-        if (splitString.Length > 3) return "";
+        if (splitString.Length > 3) return null;
 
         Console.WriteLine(text);
         var matches = new int[2];
@@ -40,16 +41,17 @@ public class PokeFuseManager
 
         if (matches.Length == 2)
         {
-            var url = await GetUrlsFromPokemonIds(matches);
+            var url = await GetPokeFuseFromPokemonIds(matches);
             return url;
         }
-        return "";
+        return null;
     }
 
-    public static async Task<string> GetUrlsFromPokemonIds(int[] pokemonIds)
+    public static async Task<PokeFuseResponse?> GetPokeFuseFromPokemonIds(int[] pokemonIds)
     {
         int pokemon1id = pokemonIds[0];
         int pokemon2id = pokemonIds[1];
+        var pokeFuseResponse = new PokeFuseResponse(pokemon1id, pokemon2id);
 
         var url1 = $"https://raw.githubusercontent.com/Aegide/custom-fusion-sprites/main/CustomBattlers/{pokemon1id}.{pokemon2id}.png";
         var url2 = $"https://raw.githubusercontent.com/Aegide/custom-fusion-sprites/main/CustomBattlers/{pokemon2id}.{pokemon1id}.png";
@@ -57,13 +59,16 @@ public class PokeFuseManager
         var url1_404 = await CheckFor404(url1);
         var url2_404 = await CheckFor404(url2);
 
-        string url = "";
-        if (url1_404 && url2_404) return url;
-        if (!url1_404) url = url1;
-        else url = url2;
+        if (url1_404 && url2_404) return null;
 
-        Console.WriteLine(url);
-        return url;
+        if(!url1_404) {
+            pokeFuseResponse.ImageUrl1 = url1;
+        }
+        if(!url2_404) {
+            pokeFuseResponse.ImageUrl2 = url2;
+        }
+        
+        return pokeFuseResponse;
     }
 
     static async Task<bool> CheckFor404(string url)

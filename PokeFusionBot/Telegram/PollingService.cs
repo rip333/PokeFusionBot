@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Pokemon;
 
 namespace Telegram
 {
@@ -21,11 +22,18 @@ namespace Telegram
                         Console.WriteLine($"Received message: {text}");
                         _lastUpdateId = update.update_id;
 
-                        var url = await PokeFuseManager.GetFuseFromMessage(text);
-                        if (string.IsNullOrEmpty(url)) continue;
+                        var pokeFuseResponse = await PokeFuseManager.GetFuseFromMessage(text);
+                        if (pokeFuseResponse == null) continue;
                         else
                         {
-                            await MessageService.SendImageToChat(update.message.chat.id, url, token, text);
+                            if (!string.IsNullOrEmpty(pokeFuseResponse.ImageUrl1))
+                            {
+                                await MessageService.SendImageToChat(update.message.chat.id, pokeFuseResponse.ImageUrl1, token, pokeFuseResponse.GetCaption());
+                            }
+                            if (!string.IsNullOrEmpty(pokeFuseResponse.ImageUrl2))
+                            {
+                                await MessageService.SendImageToChat(update.message.chat.id, pokeFuseResponse.ImageUrl2, token, pokeFuseResponse.GetCaption());
+                            }
                         }
                     }
             }

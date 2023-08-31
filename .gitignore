@@ -395,3 +395,4 @@ FodyWeavers.xsd
 PokeFusionBot/bin/
 PokeFusionBot/obj/
 PokeFusionBot/published/
+*.webp

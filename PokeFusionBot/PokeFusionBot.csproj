@@ -9,6 +9,8 @@
      <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0-rc.1.21451.13" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0-rc.1.21451.13" />
+      <PackageReference Include="PokeApiNet" Version="3.0.10" />
+      <PackageReference Include="SixLabors.ImageSharp" Version="3.0.2" />
       <PackageReference Include="Telegram.Bot" Version="16.0.2" />
       <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="0.2.0" />
       <None Include="appsettings.json" CopyToPublishDirectory="Always" />

@@ -1,3 +1,5 @@
+using Images;
+
 namespace PokeFusionBotTests.Telegram;
 
 public class PollingServiceTests
@@ -11,7 +13,7 @@ public class PollingServiceTests
         var pokeFuseResponse = new PokeFuseResponse(25, 25, "pikachu.png", "pikachu.png");
         var mockMessageService = GetMockMessageService(messages);
         var mockPokeFuseManager = GetMockPokeFuseManager(pokeFuseResponse);
-        var sut = new PollingService(mockMessageService.Object, mockPokeFuseManager.Object);
+        var sut = new PollingService(mockMessageService.Object, mockPokeFuseManager.Object, new Mock<IImageManager>().Object);
 
         // Act
         await sut.PollForUpdatesAsync();

@@ -1,4 +1,5 @@
 using FuzzySearch;
+using Images;
 
 namespace Pokemon;
 public class PokeFuseManager : IPokeFuseManager

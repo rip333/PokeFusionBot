@@ -36,6 +36,44 @@ namespace Telegram
             Console.WriteLine(responseString); // To see the server's response
         }
 
+        public async Task SendStickerToChat(long chatId, string webpUrl, string message)
+        {
+            var requestUrl = $"{Constants.API_URL}{_token}/sendSticker";
+
+            using HttpClient client = new HttpClient();
+            using var formContent = new MultipartFormDataContent
+        {
+            { new StringContent(chatId.ToString()), "chat_id" },
+            { new StringContent(message), "caption" }
+        };
+
+            using FileStream fileStream = new FileStream(webpUrl, FileMode.Open, FileAccess.Read);
+            using StreamContent fileContent = new StreamContent(fileStream);
+
+            fileContent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data")
+            {
+                Name = "\"sticker\"",
+                FileName = Path.GetFileName(webpUrl)
+            };
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+
+            formContent.Add(fileContent);
+
+            HttpResponseMessage response = await client.PostAsync(requestUrl, formContent);
+
+            await response.Content.ReadAsStringAsync();
+            requestUrl = $"{Constants.API_URL}{_token}/sendMessage";
+
+            var formContent2 = new MultipartFormDataContent
+        {
+            { new StringContent(chatId.ToString()), "chat_id" },
+            { new StringContent(message), "text" }
+        };
+
+            await _httpClient.PostAsync(requestUrl, formContent2);
+
+        }
+
         public async Task SendChatAction(long chatId, string action = "upload_photo")
         {
             var requestUrl = $"{Constants.API_URL}{_token}/sendChatAction";

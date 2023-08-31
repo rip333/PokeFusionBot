@@ -1,14 +1,19 @@
 ﻿using Images;
 using PokeApiNet;
-using Pokemon;
+using PokemonFunctions;
 using Telegram;
 
 Console.WriteLine("PokeFusionBot, I choose you!");
 
-var pokeClient = new PokeApiClient();
 var token = await ConfigUtility.GetToken();
+
 var httpClient = new HttpClient();
-var pollingService = new PollingService(new MessageService(token, httpClient), new PokeFuseManager(), new ImageManager(httpClient));
+var pollingService = new PollingService(
+        new MessageService(token, httpClient),
+        new PokeFuseManager(),
+        new ImageManager(httpClient),
+        new PokeApi(new PokeApiClient(httpClient))
+    );
 
 while (true)
 {

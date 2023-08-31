@@ -1,13 +1,14 @@
 using Images;
+using PokeApiNet;
 
-namespace Pokemon;
+namespace PokemonFunctions;
 
 public class PokeFuseResponse
 {
     public PokeFuseResponse(int id1, int id2, string imageUrl1, string imageUrl2)
     {
-        Pokemon1 = new Pokemon(id1);
-        Pokemon2 = new Pokemon(id2);
+        Pokemon1 = PokemonFromId(id1);
+        Pokemon2 = PokemonFromId(id2);
         ImageUrl1 = imageUrl1;
         ImageUrl2 = imageUrl2;
     }
@@ -25,11 +26,18 @@ public class PokeFuseResponse
     {
         int pokemon1id = pokemonIds[0];
         int pokemon2id = pokemonIds[1];
-        Pokemon1 = new Pokemon(pokemonIds[0]);
-        Pokemon2 = new Pokemon(pokemonIds[1]);
-        var baseUrl = "https://raw.githubusercontent.com/Aegide/custom-fusion-sprites/main/CustomBattlers";
-        ImageUrl1 = $"{baseUrl}/{pokemon1id}.{pokemon2id}.png";
-        ImageUrl2 = $"{baseUrl}/{pokemon2id}.{pokemon1id}.png";
+        Pokemon1 = PokemonFromId(pokemonIds[0]);
+        Pokemon2 = PokemonFromId(pokemonIds[1]);
+        ImageUrl1 = $"{Constants.SpriteBaseUrl}/{pokemon1id}.{pokemon2id}.png";
+        ImageUrl2 = $"{Constants.SpriteBaseUrl}/{pokemon2id}.{pokemon1id}.png";
+    }
+
+    private static Pokemon PokemonFromId(int id)
+    {
+        return new Pokemon()
+        {
+            Id = id
+        };
     }
 
     public string ImageUrl1 { get; set; }
@@ -87,17 +95,12 @@ public class PokeFuseResponse
         }
         return randomPokeFuseResponse;
     }
-}
 
-public class Pokemon
-{
-    public Pokemon(int id)
+    public async Task<PokeFuseResponse> PopulatePokemonData(IPokeApi pokeApi)
     {
-        Id = id;
-        Name = PokeData.PokemonIdDictionary.FirstOrDefault(x => x.Value == id).Key;
+        PokeFuseResponse populatedFuseResponse = this;
+        populatedFuseResponse.Pokemon1 = await pokeApi.GetPokemonById(Pokemon1.Id);
+        populatedFuseResponse.Pokemon2 = await pokeApi.GetPokemonById(Pokemon2.Id);
+        return populatedFuseResponse;
     }
-
-    public string Name { get; set; }
-    public int Id { get; set; }
-    public string? Type { get; set; }
 }

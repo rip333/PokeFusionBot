@@ -1,3 +1,4 @@
+using PokemonFunctions;
 using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Images;
@@ -26,7 +27,6 @@ public class ImageManager : IImageManager
         // Save as WEBP to the output path
         image.Save(outputPath, new WebpEncoder());
     }
-
     public async Task<bool> CheckFor404(string url)
     {
         HttpResponseMessage response = await _client.GetAsync(url);

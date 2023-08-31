@@ -1,18 +1,20 @@
 using Images;
-using Pokemon;
+using PokemonFunctions;
 namespace Telegram;
 public class PollingService
 {
     private readonly IMessageService _messageService;
     private readonly IPokeFuseManager _pokeFuseManager;
     private readonly IImageManager _imageManager;
+    private readonly IPokeApi _pokeApi;
     private static int _lastUpdateId = 0;
 
-    public PollingService(IMessageService messageService, IPokeFuseManager pokeFuseManager, IImageManager imageManager)
+    public PollingService(IMessageService messageService, IPokeFuseManager pokeFuseManager, IImageManager imageManager, IPokeApi pokeApi)
     {
         _messageService = messageService ?? throw new ArgumentNullException(nameof(messageService));
         _pokeFuseManager = pokeFuseManager ?? throw new ArgumentNullException(nameof(pokeFuseManager));
         _imageManager = imageManager ?? throw new ArgumentNullException(nameof(imageManager));
+        _pokeApi = pokeApi ?? throw new ArgumentNullException(nameof(pokeApi));
     }
 
     public async Task PollForUpdatesAsync()
@@ -42,6 +44,7 @@ public class PollingService
         var pokeFuseResponse = _pokeFuseManager.GetFuseFromMessage(text);
         if (pokeFuseResponse != null)
         {
+            pokeFuseResponse = await pokeFuseResponse.PopulatePokemonData(_pokeApi);
             bool image1Valid;
             bool image2Valid;
 

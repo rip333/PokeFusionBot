@@ -1,7 +1,6 @@
 using FuzzySearch;
-using Images;
 
-namespace Pokemon;
+namespace PokemonFunctions;
 public class PokeFuseManager : IPokeFuseManager
 {
     private const string _randomCommand = "pokerandom";

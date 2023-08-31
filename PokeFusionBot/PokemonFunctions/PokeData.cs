@@ -1,4 +1,4 @@
-namespace Pokemon;
+namespace PokemonFunctions;
 public class PokeData
 {
     public static int GetRandomValueFromDictionary()

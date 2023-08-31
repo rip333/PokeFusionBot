@@ -13,7 +13,9 @@ public class PollingServiceTests
         var pokeFuseResponse = new PokeFuseResponse(25, 25, "pikachu.png", "pikachu.png");
         var mockMessageService = GetMockMessageService(messages);
         var mockPokeFuseManager = GetMockPokeFuseManager(pokeFuseResponse);
-        var sut = new PollingService(mockMessageService.Object, mockPokeFuseManager.Object, new Mock<IImageManager>().Object);
+        var mockImageManager = GetMockImageManager(false);
+        var mockPokeApi = GetMockPokeApi(new Pokemon());
+        var sut = new PollingService(mockMessageService.Object, mockPokeFuseManager.Object, mockImageManager.Object, mockPokeApi.Object);
 
         // Act
         await sut.PollForUpdatesAsync();
@@ -32,7 +34,9 @@ public class PollingServiceTests
         var pokeFuseResponse = new PokeFuseResponse(Any.Int(), Any.Int(), "random.png", "random.png");
         var mockMessageService = GetMockMessageService(messages);
         var mockPokeFuseManager = GetMockPokeFuseManager(pokeFuseResponse);
-        var sut = new PollingService(mockMessageService.Object, mockPokeFuseManager.Object, new Mock<IImageManager>().Object);
+        var mockImageManager = GetMockImageManager(false);
+        var mockPokeApi = GetMockPokeApi(new Pokemon());
+        var sut = new PollingService(mockMessageService.Object, mockPokeFuseManager.Object, mockImageManager.Object, mockPokeApi.Object);
 
         // Act
         await sut.PollForUpdatesAsync();
@@ -55,4 +59,19 @@ public class PollingServiceTests
         mock.Setup(x => x.GetFuseFromMessage(It.IsAny<string>())).Returns(pokeFuseResponse);
         return mock;
     }
+
+    private Mock<IImageManager> GetMockImageManager(bool return404)
+    {
+        var mock = new Mock<IImageManager>();
+        mock.Setup(x => x.CheckFor404(It.IsAny<string>())).ReturnsAsync(return404);
+        return mock;
+    }
+
+    private Mock<IPokeApi> GetMockPokeApi(Pokemon pokemon)
+    {
+        var mock = new Mock<IPokeApi>();
+        mock.Setup(x => x.GetPokemonById(It.IsAny<int>())).ReturnsAsync(pokemon);
+        return mock;
+    }
+
 }

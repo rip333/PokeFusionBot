@@ -9,9 +9,7 @@ public class ConfigUtility
             .AddJsonFile("appsettings.json", optional: false);
         var config = builder.Build();
         var tokenFileLocation = config["AppSettings:TokenFileLocation"];
-        Console.WriteLine(tokenFileLocation);
         var token = (await File.ReadAllTextAsync(tokenFileLocation)).Trim();
-        Console.WriteLine(token);
         return token;
     }
 }

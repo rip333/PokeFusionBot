@@ -2,13 +2,15 @@ namespace Pokemon;
 
 public class PokeFuseResponse
 {
-    public PokeFuseResponse(int id1, int id2){
+    public PokeFuseResponse(int id1, int id2, string imageUrl1, string imageUrl2){
         Pokemon1 = new Pokemon(id1);
         Pokemon2 = new Pokemon(id2);
+        ImageUrl1 = imageUrl1;
+        ImageUrl2 = imageUrl2;
     }
 
-    public string? ImageUrl1 { get; set; }
-    public string? ImageUrl2 { get; set; }
+    public string ImageUrl1 { get; set; }
+    public string ImageUrl2 { get; set; }
     public Pokemon Pokemon1 { get; set; }
     public Pokemon Pokemon2 { get; set; }
     public string FusedName(int i = 1) {
@@ -36,7 +38,7 @@ public class PokeFuseResponse
 public class Pokemon {
     public Pokemon(int id) {
         Id = id;
-        Name = PokeData.dict.FirstOrDefault(x => x.Value == id).Key;
+        Name = PokeData.PokemonIdDictionary.FirstOrDefault(x => x.Value == id).Key;
     }
 
     public string Name { get; set; }

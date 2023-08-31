@@ -1,3 +1,6 @@
 {
-    "dotnet.defaultSolution": "PokeFusionBot.sln"
+    "dotnet.defaultSolution": "PokeFusionBot.sln",
+    "cSpell.words": [
+        "pokerandom"
+    ]
 }

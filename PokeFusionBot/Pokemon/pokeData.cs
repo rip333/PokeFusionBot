@@ -1,15 +1,14 @@
 namespace Pokemon;
 public class PokeData
 {
-
     public static int GetRandomValueFromDictionary()
     {
         var random = new Random();
-        var values = dict.Values.ToList();
+        var values = PokemonIdDictionary.Values.ToList();
         return values[random.Next(values.Count)];
     }
 
-    public static Dictionary<string, int> dict = new Dictionary<string, int>{
+    public static Dictionary<string, int> PokemonIdDictionary = new Dictionary<string, int>{
         {"bulbasaur", 1}
         , {"ivysaur", 2}
         , {"venusaur", 3}

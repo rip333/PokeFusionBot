@@ -1,46 +1,57 @@
-using System.Text.Json;
 using Pokemon;
-
-namespace Telegram
+namespace Telegram;
+public class PollingService
 {
-    public class PollingService
+    private readonly IMessageService _messageService;
+    private readonly IPokeFuseManager _pokeFuseManager;
+    private static int _lastUpdateId = 0;
+
+    public PollingService(IMessageService messageService, IPokeFuseManager pokeFuseManager)
     {
-        private static HttpClient _httpClient = new HttpClient();
-        private static int _lastUpdateId = 0;
+        _messageService = messageService ?? throw new ArgumentNullException(nameof(messageService));
+        _pokeFuseManager = pokeFuseManager ?? throw new ArgumentNullException(nameof(pokeFuseManager));
+    }
 
-        public static async Task PollForUpdatesAsync(string token)
+    public async Task PollForUpdatesAsync()
+    {
+        try
         {
-            var response = await _httpClient.GetStringAsync($"{Constants.API_URL}{token}/getUpdates?offset={_lastUpdateId + 1}&allowedUpdates=UpdateType.Message");
-            try
-            {
-                var updates = JsonSerializer.Deserialize<GetUpdateResponse>(response);
+            var updates = await _messageService.GetUpdates(_lastUpdateId);
 
-                if (updates != null && updates.result != null)
-                    foreach (var update in updates.result)
-                    {
-                        var text = update.message?.text ?? update.edited_message?.text ?? "";
-                        Console.WriteLine($"Received message: {text}");
-                        _lastUpdateId = update.update_id;
-
-                        var pokeFuseResponse = await PokeFuseManager.GetFuseFromMessage(text);
-                        if (pokeFuseResponse == null) continue;
-                        else
-                        {
-                            if (!string.IsNullOrEmpty(pokeFuseResponse.ImageUrl1))
-                            {
-                                await MessageService.SendImageToChat(update.message.chat.id, pokeFuseResponse.ImageUrl1, token, pokeFuseResponse.GetCaption1());
-                            }
-                            if (!string.IsNullOrEmpty(pokeFuseResponse.ImageUrl2) && pokeFuseResponse.ImageUrl1 != pokeFuseResponse.ImageUrl2)
-                            {
-                                await MessageService.SendImageToChat(update.message.chat.id, pokeFuseResponse.ImageUrl2, token, pokeFuseResponse.GetCaption2());
-                            }
-                        }
-                    }
-            }
-            catch (Exception e)
+            if (updates?.result == null) return;
+            foreach (var result in updates.result)
             {
-                Console.WriteLine($"Error: {e.Message}. {e.StackTrace}");
+                await ProcessUpdate(result);
             }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error: {e.Message}. {e.StackTrace}");
+        }
+    }
+
+    private async Task ProcessUpdate(Result update)
+    {
+        var text = update.message?.text ?? update.edited_message?.text ?? "";
+        Console.WriteLine($"Received message: {text}");
+        _lastUpdateId = update.update_id;
+
+        var pokeFuseResponse = _pokeFuseManager.GetFuseFromMessage(text);
+        if (pokeFuseResponse != null)
+        {
+            await SendImageIfAvailable(update.message.chat.id, pokeFuseResponse.ImageUrl1, pokeFuseResponse.GetCaption1());
+            if (pokeFuseResponse.ImageUrl1 != pokeFuseResponse.ImageUrl2)
+            {
+                await SendImageIfAvailable(update.message.chat.id, pokeFuseResponse.ImageUrl2, pokeFuseResponse.GetCaption2());
+            }
+        }
+    }
+
+    private async Task SendImageIfAvailable(long chatId, string imageUrl, string caption)
+    {
+        if (!await _messageService.CheckFor404(imageUrl))
+        {
+            await _messageService.SendImageToChat(chatId, imageUrl, caption);
         }
     }
 }

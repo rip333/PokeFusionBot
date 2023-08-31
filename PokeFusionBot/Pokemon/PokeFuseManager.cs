@@ -1,82 +1,56 @@
 using FuzzySearch;
 
 namespace Pokemon;
-public class PokeFuseManager
+public class PokeFuseManager : IPokeFuseManager
 {
-    public async static Task<PokeFuseResponse?> GetFuseFromMessage(string text)
+    private const string _randomCommand = "pokerandom";
+
+    public PokeFuseResponse? GetFuseFromMessage(string text)
     {
         var splitString = text.Split(" ");
-        if (splitString.Length > 3) return null;
+        if (splitString.Length > 2) return null;
 
-        Console.WriteLine(text);
-        var matches = new int[2];
-        int i = 0;
-        foreach (var word in splitString)
+        if (splitString.Any(word => word.ToLower() == _randomCommand))
         {
-            if (i == 2) break;
-
-            if (word.ToLower() == "pokerandom") {
-                matches[0] = PokeData.GetRandomValueFromDictionary();
-                matches[1] = PokeData.GetRandomValueFromDictionary();
-                i = 2;
-                break;
-            }
-
-            int threshold = 1; // This value can be adjusted
-            foreach (var key in PokeData.dict.Keys)
+            return GetPokeFuseFromPokemonIds(new int[]
             {
-                if (i == 2) break;
-                if (Distance.LevenshteinDistance(word.ToLower(), key) <= threshold)
-                {
-                    int id = PokeData.dict[key];
-                    if (id != 0)
-                    {
-                        matches[i] = id;
-                        i++;
-                    }
-                }
-            }
-
+                PokeData.GetRandomValueFromDictionary(),
+                PokeData.GetRandomValueFromDictionary()
+            });
         }
 
-        if (matches.Length == 2)
-        {
-            var url = await GetPokeFuseFromPokemonIds(matches);
-            return url;
-        }
-        return null;
+        var matches = splitString
+            .Take(2)
+            .Select(word => GetClosestMatch(word.ToLower()))
+            .Where(id => id != 0)
+            .ToArray();
+
+        return matches.Length == 2 ? GetPokeFuseFromPokemonIds(matches) : null;
     }
 
-    public static async Task<PokeFuseResponse?> GetPokeFuseFromPokemonIds(int[] pokemonIds)
+    private int GetClosestMatch(string word)
     {
+        int threshold = 1;
+        return PokeData.PokemonIdDictionary
+            .Where(kvp => Distance.LevenshteinDistance(word, kvp.Key) <= threshold)
+            .Select(kvp => kvp.Value)
+            .FirstOrDefault();
+    }
+
+    public PokeFuseResponse GetPokeFuseFromPokemonIds(int[] pokemonIds)
+    {
+        if (pokemonIds.Length < 2)
+        {
+            return new PokeFuseResponse(0, 0, "", "");
+        }
+
         int pokemon1id = pokemonIds[0];
         int pokemon2id = pokemonIds[1];
-        var pokeFuseResponse = new PokeFuseResponse(pokemon1id, pokemon2id);
 
-        var url1 = $"https://raw.githubusercontent.com/Aegide/custom-fusion-sprites/main/CustomBattlers/{pokemon1id}.{pokemon2id}.png";
-        var url2 = $"https://raw.githubusercontent.com/Aegide/custom-fusion-sprites/main/CustomBattlers/{pokemon2id}.{pokemon1id}.png";
+        var baseUrl = "https://raw.githubusercontent.com/Aegide/custom-fusion-sprites/main/CustomBattlers";
+        var url1 = $"{baseUrl}/{pokemon1id}.{pokemon2id}.png";
+        var url2 = $"{baseUrl}/{pokemon2id}.{pokemon1id}.png";
 
-        var url1_404 = await CheckFor404(url1);
-        var url2_404 = await CheckFor404(url2);
-
-        if (url1_404 && url2_404) return null;
-
-        if(!url1_404) {
-            pokeFuseResponse.ImageUrl1 = url1;
-        }
-        if(!url2_404) {
-            pokeFuseResponse.ImageUrl2 = url2;
-        }
-        
-        return pokeFuseResponse;
-    }
-
-    static async Task<bool> CheckFor404(string url)
-    {
-        using (HttpClient httpClient = new HttpClient())
-        {
-            HttpResponseMessage response = await httpClient.GetAsync(url);
-            return response.StatusCode == System.Net.HttpStatusCode.NotFound;
-        }
+        return new PokeFuseResponse(pokemon1id, pokemon2id, url1, url2);
     }
 }

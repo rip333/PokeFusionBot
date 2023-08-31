@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokeFusionBot", "PokeFusionBot\PokeFusionBot.csproj", "{667DACB4-0187-404B-9B91-E558600149E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokeFusionBotTests", "PokeFusionBotTests\PokeFusionBotTests.csproj", "{495DEEE1-D742-44F1-ABBB-DE097BE2B98D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{667DACB4-0187-404B-9B91-E558600149E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{667DACB4-0187-404B-9B91-E558600149E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{667DACB4-0187-404B-9B91-E558600149E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{495DEEE1-D742-44F1-ABBB-DE097BE2B98D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{495DEEE1-D742-44F1-ABBB-DE097BE2B98D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{495DEEE1-D742-44F1-ABBB-DE097BE2B98D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{495DEEE1-D742-44F1-ABBB-DE097BE2B98D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

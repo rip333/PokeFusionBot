@@ -84,11 +84,5 @@ namespace Telegram
             };
             await _httpClient.PostAsync(requestUrl, formContent);
         }
-
-        public async Task<bool> CheckFor404(string url)
-        {
-            HttpResponseMessage response = await _httpClient.GetAsync(url);
-            return response.StatusCode == System.Net.HttpStatusCode.NotFound;
-        }
     }
 }

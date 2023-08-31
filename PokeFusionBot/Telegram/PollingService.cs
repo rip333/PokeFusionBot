@@ -42,29 +42,44 @@ public class PollingService
         var pokeFuseResponse = _pokeFuseManager.GetFuseFromMessage(text);
         if (pokeFuseResponse != null)
         {
-            await _imageManager.ConvertPngUrlToWebpAsync(pokeFuseResponse.ImageUrl1, pokeFuseResponse.GetWebpUrl1());
-            await SendStickerIfAvailable(update.message.chat.id, pokeFuseResponse.GetWebpUrl1(), pokeFuseResponse.ImageUrl1, pokeFuseResponse.GetCaption1());
-            if (pokeFuseResponse.ImageUrl1 != pokeFuseResponse.ImageUrl2)
+            bool image1Valid;
+            bool image2Valid;
+
+            if (pokeFuseResponse.IsRandom)
             {
-                await _imageManager.ConvertPngUrlToWebpAsync(pokeFuseResponse.ImageUrl2, pokeFuseResponse.GetWebpUrl2());
-                await SendStickerIfAvailable(update.message.chat.id, pokeFuseResponse.GetWebpUrl2(), pokeFuseResponse.ImageUrl2, pokeFuseResponse.GetCaption2());
+                pokeFuseResponse = await pokeFuseResponse.GenerateRandomUntilValid(_imageManager);
+                image1Valid = !await _imageManager.CheckFor404(pokeFuseResponse.ImageUrl1);
+                image2Valid = !await _imageManager.CheckFor404(pokeFuseResponse.ImageUrl2);
+            }
+            else
+            {
+                image1Valid = !await _imageManager.CheckFor404(pokeFuseResponse.ImageUrl1);
+                image2Valid = !await _imageManager.CheckFor404(pokeFuseResponse.ImageUrl2);
+            }
+
+            if (image1Valid)
+            {
+                await _imageManager.ConvertPngUrlToWebpAsync(pokeFuseResponse.ImageUrl1, pokeFuseResponse.GetWebpUrl());
+                await SendStickerIfAvailable(update.message.chat.id, pokeFuseResponse.GetWebpUrl(), pokeFuseResponse.GetCaption1());
+            }
+            if (pokeFuseResponse.ImageUrl1 != pokeFuseResponse.ImageUrl2 && image2Valid)
+            {
+                await _imageManager.ConvertPngUrlToWebpAsync(pokeFuseResponse.ImageUrl2, pokeFuseResponse.GetWebpUrl());
+                await SendStickerIfAvailable(update.message.chat.id, pokeFuseResponse.GetWebpUrl(), pokeFuseResponse.GetCaption2());
             }
         }
     }
 
     private async Task SendImageIfAvailable(long chatId, string imageUrl, string caption)
     {
-        if (!await _messageService.CheckFor404(imageUrl))
+        if (!await _imageManager.CheckFor404(imageUrl))
         {
             await _messageService.SendImageToChat(chatId, imageUrl, caption);
         }
     }
 
-    private async Task SendStickerIfAvailable(long chatId, string webpUrl, string imageUrl, string caption)
+    private async Task SendStickerIfAvailable(long chatId, string webpUrl, string caption)
     {
-        if (!await _messageService.CheckFor404(imageUrl))
-        {
-            await _messageService.SendStickerToChat(chatId, webpUrl, caption);
-        }
+        await _messageService.SendStickerToChat(chatId, webpUrl, caption);
     }
 }

@@ -13,11 +13,7 @@ public class PokeFuseManager : IPokeFuseManager
 
         if (splitString.Any(word => word.ToLower() == _randomCommand))
         {
-            return GetPokeFuseFromPokemonIds(new int[]
-            {
-                PokeData.GetRandomValueFromDictionary(),
-                PokeData.GetRandomValueFromDictionary()
-            });
+            return PokeFuseResponse.Random();
         }
 
         var matches = splitString
@@ -31,6 +27,13 @@ public class PokeFuseManager : IPokeFuseManager
 
     private int GetClosestMatch(string word)
     {
+        // Check for an exact match
+        if (PokeData.PokemonIdDictionary.TryGetValue(word, out int exactMatchValue))
+        {
+            return exactMatchValue;
+        }
+
+        // If no exact match, use fuzzy search
         int threshold = 1;
         return PokeData.PokemonIdDictionary
             .Where(kvp => Distance.LevenshteinDistance(word, kvp.Key) <= threshold)
@@ -44,14 +47,6 @@ public class PokeFuseManager : IPokeFuseManager
         {
             return new PokeFuseResponse(0, 0, "", "");
         }
-
-        int pokemon1id = pokemonIds[0];
-        int pokemon2id = pokemonIds[1];
-
-        var baseUrl = "https://raw.githubusercontent.com/Aegide/custom-fusion-sprites/main/CustomBattlers";
-        var url1 = $"{baseUrl}/{pokemon1id}.{pokemon2id}.png";
-        var url2 = $"{baseUrl}/{pokemon2id}.{pokemon1id}.png";
-
-        return new PokeFuseResponse(pokemon1id, pokemon2id, url1, url2);
+        return new PokeFuseResponse(pokemonIds);
     }
 }

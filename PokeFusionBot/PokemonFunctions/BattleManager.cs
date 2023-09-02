@@ -19,8 +19,8 @@ public class BattleManager : IBattleManager
         var fuse1 = new PokeFuseResponse(firstIds);
         var fuse2 = new PokeFuseResponse(secondIds);
         var chatGptResponse = await _chatGpt.Ask(Prompts.FuseBattle(fuse1, fuse2));
-        var header = $"{fuse1.FusedName(1)} ({Utilities.UppercaseFirstLetter(fuse1.Pokemon1.Name)} & {Utilities.UppercaseFirstLetter(fuse1.Pokemon2.Name)})\n "
-            + $"VERSUS\n {fuse2.FusedName(1)} ({Utilities.UppercaseFirstLetter(fuse2.Pokemon1.Name)} & {Utilities.UppercaseFirstLetter(fuse2.Pokemon2.Name)})\n";
+        var header = $"\n{fuse1.FusedName(1)} ({Utilities.UppercaseFirstLetter(fuse1.Pokemon1.Name)} & {Utilities.UppercaseFirstLetter(fuse1.Pokemon2.Name)})\n"
+            + $"VERSUS\n{fuse2.FusedName(1)} ({Utilities.UppercaseFirstLetter(fuse2.Pokemon1.Name)} & {Utilities.UppercaseFirstLetter(fuse2.Pokemon2.Name)})\n";
         return $"```{header}\n{RemoveNoteFromString(chatGptResponse)}\n```";
     }
 

@@ -396,3 +396,4 @@ PokeFusionBot/bin/
 PokeFusionBot/obj/
 PokeFusionBot/published/
 *.webp
+PokeFusionBot/open-ai-secret-key.txt

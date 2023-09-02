@@ -61,13 +61,18 @@ namespace Telegram
 
             HttpResponseMessage response = await client.PostAsync(requestUrl, formContent);
 
-            await response.Content.ReadAsStringAsync();
-            requestUrl = $"{Constants.API_URL}{_token}/sendMessage";
+            await SendMessageToChat(chatId, message);
+        }
+
+        public async Task SendMessageToChat(long chatId, string message, string parseMode = "")
+        {
+            var requestUrl = $"{Constants.API_URL}{_token}/sendMessage";
 
             var formContent2 = new MultipartFormDataContent
         {
             { new StringContent(chatId.ToString()), "chat_id" },
-            { new StringContent(message), "text" }
+            { new StringContent(message), "text" },
+            {new StringContent(parseMode), "parse_mode"}
         };
 
             await _httpClient.PostAsync(requestUrl, formContent2);

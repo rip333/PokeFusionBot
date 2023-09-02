@@ -1,4 +1,5 @@
 using Images;
+using PokeFusionBot.ChatGptFunctions;
 using PokemonFunctions;
 namespace Telegram;
 public class PollingService
@@ -7,14 +8,17 @@ public class PollingService
     private readonly IPokeFuseManager _pokeFuseManager;
     private readonly IImageManager _imageManager;
     private readonly IPokeApi _pokeApi;
+    public readonly IBattleManager _battleManager;
     private static int _lastUpdateId = 0;
 
-    public PollingService(IMessageService messageService, IPokeFuseManager pokeFuseManager, IImageManager imageManager, IPokeApi pokeApi)
+    public PollingService(IMessageService messageService, IPokeFuseManager pokeFuseManager, IImageManager imageManager,
+    IPokeApi pokeApi, IBattleManager battleManager)
     {
         _messageService = messageService ?? throw new ArgumentNullException(nameof(messageService));
         _pokeFuseManager = pokeFuseManager ?? throw new ArgumentNullException(nameof(pokeFuseManager));
         _imageManager = imageManager ?? throw new ArgumentNullException(nameof(imageManager));
         _pokeApi = pokeApi ?? throw new ArgumentNullException(nameof(pokeApi));
+        _battleManager = battleManager;
     }
 
     public async Task PollForUpdatesAsync()
@@ -26,6 +30,7 @@ public class PollingService
             if (updates?.result == null) return;
             foreach (var result in updates.result)
             {
+                _lastUpdateId = result.update_id;
                 await ProcessUpdate(result);
             }
         }
@@ -35,16 +40,29 @@ public class PollingService
         }
     }
 
-    private async Task ProcessUpdate(Result update)
+    private async Task ProcessUpdate(Result result)
     {
-        var text = update.message?.text ?? update.edited_message?.text ?? "";
+        var text = result.message?.text ?? "";
         Console.WriteLine($"Received message: {text}");
-        _lastUpdateId = update.update_id;
+        if (string.IsNullOrEmpty(text)) return;
+
+        if (BattleManager.CheckStringFormat(text))
+        {
+            await _messageService.SendChatAction(result.message.chat.id, "typing");
+            var battleText = await _battleManager.HandleBattle(text);
+            if (!string.IsNullOrEmpty(battleText))
+            {
+                Console.WriteLine("Sending Battle Text...");
+                await _messageService.SendMessageToChat(result.message.chat.id, battleText, "Markdown");
+                return;
+            }
+        }
+
 
         var pokeFuseResponse = _pokeFuseManager.GetFuseFromMessage(text);
         if (pokeFuseResponse != null)
         {
-            pokeFuseResponse = await pokeFuseResponse.PopulatePokemonData(_pokeApi);
+            //pokeFuseResponse = await pokeFuseResponse.PopulatePokemonData(_pokeApi);
             bool image1Valid;
             bool image2Valid;
 
@@ -63,12 +81,12 @@ public class PollingService
             if (image1Valid)
             {
                 await _imageManager.ConvertPngUrlToWebpAsync(pokeFuseResponse.ImageUrl1, pokeFuseResponse.GetWebpUrl());
-                await SendStickerIfAvailable(update.message.chat.id, pokeFuseResponse.GetWebpUrl(), pokeFuseResponse.GetCaption1());
+                await SendStickerIfAvailable(result.message.chat.id, pokeFuseResponse.GetWebpUrl(), pokeFuseResponse.GetCaption1());
             }
             if (pokeFuseResponse.ImageUrl1 != pokeFuseResponse.ImageUrl2 && image2Valid)
             {
                 await _imageManager.ConvertPngUrlToWebpAsync(pokeFuseResponse.ImageUrl2, pokeFuseResponse.GetWebpUrl());
-                await SendStickerIfAvailable(update.message.chat.id, pokeFuseResponse.GetWebpUrl(), pokeFuseResponse.GetCaption2());
+                await SendStickerIfAvailable(result.message.chat.id, pokeFuseResponse.GetWebpUrl(), pokeFuseResponse.GetCaption2());
             }
         }
     }

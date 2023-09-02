@@ -8,6 +8,18 @@ public class PokeData
         return values[random.Next(values.Count)];
     }
 
+    public static string? GetNameFromId(int value)
+    {
+        foreach (var pair in PokemonIdDictionary)
+        {
+            if (pair.Value == value)
+            {
+                return pair.Key;
+            }
+        }
+        return null; // Value not found in the dictionary
+    }
+
     public static Dictionary<string, int> PokemonIdDictionary = new Dictionary<string, int>{
         {"bulbasaur", 1}
         , {"ivysaur", 2}

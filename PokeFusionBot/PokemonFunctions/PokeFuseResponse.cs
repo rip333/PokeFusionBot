@@ -36,7 +36,8 @@ public class PokeFuseResponse
     {
         return new Pokemon()
         {
-            Id = id
+            Id = id,
+            Name = PokeData.GetNameFromId(id) ?? ""
         };
     }
 
@@ -63,12 +64,12 @@ public class PokeFuseResponse
 
     public string GetCaption1()
     {
-        return $"{Utilities.UppercaseFirstLetter(Pokemon1.Name)} + {Utilities.UppercaseFirstLetter(Pokemon2.Name)} = {FusedName(1)}";
+        return $"{Utilities.UppercaseFirstLetter(Pokemon1.Name)} + {Utilities.UppercaseFirstLetter(Pokemon2.Name)} = {FusedName(1)}. (ID: {Pokemon1.Id}.{Pokemon2.Id})";
     }
 
     public string GetCaption2()
     {
-        return $"{Utilities.UppercaseFirstLetter(Pokemon2.Name)} + {Utilities.UppercaseFirstLetter(Pokemon1.Name)} = {FusedName(2)}";
+        return $"{Utilities.UppercaseFirstLetter(Pokemon2.Name)} + {Utilities.UppercaseFirstLetter(Pokemon1.Name)} = {FusedName(2)} (ID: {Pokemon2.Id}.{Pokemon1.Id})";
     }
 
     public string GetWebpUrl()

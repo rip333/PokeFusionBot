@@ -15,7 +15,8 @@ public class PollingServiceTests
         var mockPokeFuseManager = GetMockPokeFuseManager(pokeFuseResponse);
         var mockImageManager = GetMockImageManager(false);
         var mockPokeApi = GetMockPokeApi(new Pokemon());
-        var sut = new PollingService(mockMessageService.Object, mockPokeFuseManager.Object, mockImageManager.Object, mockPokeApi.Object);
+        var mockBattleManager = new Mock<IBattleManager>();
+        var sut = new PollingService(mockMessageService.Object, mockPokeFuseManager.Object, mockImageManager.Object, mockPokeApi.Object, mockBattleManager.Object);
 
         // Act
         await sut.PollForUpdatesAsync();
@@ -36,7 +37,8 @@ public class PollingServiceTests
         var mockPokeFuseManager = GetMockPokeFuseManager(pokeFuseResponse);
         var mockImageManager = GetMockImageManager(false);
         var mockPokeApi = GetMockPokeApi(new Pokemon());
-        var sut = new PollingService(mockMessageService.Object, mockPokeFuseManager.Object, mockImageManager.Object, mockPokeApi.Object);
+        var mockBattleManager = new Mock<IBattleManager>();
+        var sut = new PollingService(mockMessageService.Object, mockPokeFuseManager.Object, mockImageManager.Object, mockPokeApi.Object, mockBattleManager.Object);
 
         // Act
         await sut.PollForUpdatesAsync();

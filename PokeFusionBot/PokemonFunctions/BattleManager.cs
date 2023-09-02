@@ -19,7 +19,9 @@ public class BattleManager : IBattleManager
         var fuse1 = new PokeFuseResponse(firstIds);
         var fuse2 = new PokeFuseResponse(secondIds);
         var chatGptResponse = await _chatGpt.Ask(Prompts.FuseBattle(fuse1, fuse2));
-        return "```\n" + chatGptResponse + "\n```";
+        var header = $"{fuse1.FusedName(1)} ({Utilities.UppercaseFirstLetter(fuse1.Pokemon1.Name)} & {Utilities.UppercaseFirstLetter(fuse1.Pokemon2.Name)})\n "
+            + $"VERSUS\n {fuse2.FusedName(1)} ({Utilities.UppercaseFirstLetter(fuse2.Pokemon1.Name)} & {Utilities.UppercaseFirstLetter(fuse2.Pokemon2.Name)})\n";
+        return $"```{header}\n{RemoveNoteFromString(chatGptResponse)}\n```";
     }
 
     public static void ExtractIds(string text, out int[] ids1, out int[] ids2)
@@ -58,6 +60,30 @@ public class BattleManager : IBattleManager
         }
 
         return true;
+    }
+
+    public static string RemoveNoteFromString(string content)
+    {
+        string[] lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+        int noteLineIndex = -1;
+
+        for (int i = lines.Length - 1; i >= 0; i--)
+        {
+            if (lines[i].StartsWith("(Note:"))
+            {
+                noteLineIndex = i;
+                break;
+            }
+        }
+
+        if (noteLineIndex != -1)
+        {
+            string[] newLines = new string[noteLineIndex];
+            Array.Copy(lines, newLines, noteLineIndex);
+            return string.Join(Environment.NewLine, newLines);
+        }
+
+        return content;
     }
 
 }

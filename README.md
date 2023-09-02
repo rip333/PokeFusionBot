@@ -7,7 +7,6 @@ This bot polls groups and messages it has access to.  If the message contains tw
 Credit for the Image Source: https://kaboom242.github.io/PokemonInfiniteFusionTool/
 
 
-
 ## Tech Stack
 
 C# Console App, Dotnet core.
@@ -22,14 +21,14 @@ Message https://t.me/BotFather on Telegram to create a new bot and generate an a
 
 Run the console application. As long as the bot is running, it will poll any chats and groups it has access to.
 
-####Fusions
+#### Fusions
 In Telegram, type any two Pokemon names. 
 - Example: "Charmander Pikachu"
 After a few moments, the bot will post the fusion image as a sticker into the same channel.
 
 Some combinations have no fusion image. Use the tool above to evaluate valid combos.
 
-####Battles
+#### Battles
 
 You will need to generate a ChatGPT Api key to generate battles.  Configure another txt file with that key.
 

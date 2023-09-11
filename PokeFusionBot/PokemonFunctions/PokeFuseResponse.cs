@@ -28,8 +28,8 @@ public class PokeFuseResponse
         int pokemon2id = pokemonIds[1];
         Pokemon1 = PokemonFromId(pokemonIds[0]);
         Pokemon2 = PokemonFromId(pokemonIds[1]);
-        ImageUrl1 = $"{Constants.SpriteBaseUrl}/{pokemon1id}.{pokemon2id}.png";
-        ImageUrl2 = $"{Constants.SpriteBaseUrl}/{pokemon2id}.{pokemon1id}.png";
+        ImageUrl1 = $"{Constants.SpriteBaseUrl}/{pokemon1id}/{pokemon1id}.{pokemon2id}.png";
+        ImageUrl2 = $"{Constants.SpriteBaseUrl}/{pokemon2id}/{pokemon2id}.{pokemon1id}.png";
     }
 
     private static Pokemon PokemonFromId(int id)

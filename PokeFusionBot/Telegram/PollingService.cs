@@ -46,17 +46,17 @@ public class PollingService
         Console.WriteLine($"Received message: {text}");
         if (string.IsNullOrEmpty(text)) return;
 
-        if (BattleManager.CheckStringFormat(text))
-        {
-            await _messageService.SendChatAction(result.message.chat.id, "typing");
-            var battleText = await _battleManager.HandleBattle(text);
-            if (!string.IsNullOrEmpty(battleText))
-            {
-                Console.WriteLine("Sending Battle Text...");
-                await _messageService.SendMessageToChat(result.message.chat.id, battleText, "Markdown");
-                return;
-            }
-        }
+        // if (BattleManager.CheckStringFormat(text))
+        // {
+        //     await _messageService.SendChatAction(result.message.chat.id, "typing");
+        //     var battleText = await _battleManager.HandleBattle(text);
+        //     if (!string.IsNullOrEmpty(battleText))
+        //     {
+        //         Console.WriteLine("Sending Battle Text...");
+        //         await _messageService.SendMessageToChat(result.message.chat.id, battleText, "Markdown");
+        //         return;
+        //     }
+        // }
 
 
         var pokeFuseResponse = _pokeFuseManager.GetFuseFromMessage(text);
